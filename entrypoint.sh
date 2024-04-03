@@ -199,25 +199,19 @@ if [[ $arch = "arm64" ]]; then
                 echo "Failed downloading ${path}, refer to the README for details"
                 exit 1
             fi
-            unzip "/tmp/${path}.zip" -d "/${path}"
+            unzip "/tmp/${path}.zip" -d "./${path}"
         }
 
-        # 创建工具链目录
-        mkdir -p /prebuilts/clang/kernel/linux-x86
-        mkdir -p /prebuilts/gcc/linux-x86/aarch64
-        mkdir -p /prebuilts/gcc/linux-x86/arm
-        mkdir -p /prebuilts/gcc/linux-x86/x86
-
         # 下载并解压clang
-        prepare_toolchain "LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b" "prebuilts/clang/kernel/linux-x86/clang-r416183b" "lineage-20.0"
+        prepare_toolchain "LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b" "clang" "lineage-20.0"
 
         # 下载并解压GCC工具链
-        prepare_toolchain "LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9" "prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9" "lineage-19.1"
-        prepare_toolchain "LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9" "prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9" "lineage-19.1"
-        prepare_toolchain "LineageOS/android_prebuilts_gcc_linux-x86_x86_x86_64-linux-android-4.9" "prebuilts/gcc/linux-x86/x86/x86_64-linux-android-4.9" "lineage-19.1"
+        prepare_toolchain "LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9" "gcc_arm64" "lineage-19.1"
+        prepare_toolchain "LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9" "gcc_arm" "lineage-19.1"
+        prepare_toolchain "LineageOS/android_prebuilts_gcc_linux-x86_x86_x86_64-linux-android-4.9" "gcc_x86" "lineage-19.1"
 
         # 配置环境变量
-        export PATH="/prebuilts/clang/kernel/linux-x86/clang-r416183b/bin:/prebuilts/gcc/linux-x86/aarch64/aarch64-linux-android-4.9/bin:/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9/bin:/prebuilts/gcc/linux-x86/x86/x86_64-linux-android-4.9/bin:$PATH"
+        export PATH="/clang/bin:/gcc_arm64/bin:/gcc_arm/bin:/gcc_x86/bin:$PATH"
 
         export CLANG_TRIPLE="aarch64-linux-gnu-"
         export CROSS_COMPILE="aarch64-linux-android-"
