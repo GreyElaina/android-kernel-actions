@@ -199,7 +199,7 @@ if [[ $arch = "arm64" ]]; then
                 echo "Failed downloading ${path}, refer to the README for details"
                 exit 1
             fi
-            unzip "/tmp/${path}.zip" -d "./${path}"
+            unzip "/tmp/${path}.zip" -d "/${path}"
         }
 
         # 下载并解压clang
