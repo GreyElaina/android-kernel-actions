@@ -21,6 +21,21 @@ extract_tarball() {
     tar xf "$1" -C "$2"
 }
 
+prepare_toolchain() {
+    local name=$1
+    local v=$2
+    local revision=$3
+    local url="https://github.com/${name}/archive/refs/heads/${revision}.zip"
+
+    echo "Downloading $url"
+    if ! wget --no-check-certificate "$url" -O "/tmp/$v.zip" &>/dev/null; then
+        echo "Failed downloading $v, refer to the README for details"
+        exit 1
+    fi
+    mkdir -p "/$v"
+    unzip "/tmp/$path.zip" -d "/$v"
+}
+
 workdir="$GITHUB_WORKSPACE"
 arch="$1"
 compiler="$2"
@@ -71,8 +86,8 @@ if [[ $arch = "arm64" ]]; then
 
         if $binutils; then
             additional_packages="binutils binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi"
-            make_opts="CC=clang"
-            host_make_opts="HOSTCC=clang HOSTCXX=clang++"
+            make_opts='CC="sccache clang"'
+            host_make_opts='HOSTCC="sccache clang" HOSTCXX="sccache clang++'
         else
             # Most android kernels still need binutils as the assembler, but it will
             # not be used when the Makefile is patched to make use of LLVM_IAS option
@@ -188,20 +203,7 @@ if [[ $arch = "arm64" ]]; then
         export CROSS_COMPILE="aarch64-linux-android-"
         export CROSS_COMPILE_ARM32="arm-linux-androideabi-"
     elif [[ $compiler = custom ]]; then
-        prepare_toolchain() {
-            local name=$1
-            local v=$2
-            local revision=$3
-            local url="https://github.com/${name}/archive/refs/heads/${revision}.zip"
-
-            echo "Downloading $url"
-            if ! wget --no-check-certificate "$url" -O "/tmp/$v.zip" &>/dev/null; then
-                echo "Failed downloading $v, refer to the README for details"
-                exit 1
-            fi
-            mkdir -p "/$v"
-            unzip "/tmp/$path.zip" -d "/$v"
-        }
+        
 
         # 下载并解压clang
         prepare_toolchain "LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b" "clang" "lineage-20.0"
@@ -215,9 +217,9 @@ if [[ $arch = "arm64" ]]; then
         # 配置环境变量
         export PATH="/clang/bin:/gcc_arm64/bin:/gcc_arm/bin:$PATH"
 
-        make_opts="CC=clang LD=ld.lld NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy"
+        make_opts='CC="sccache clang" LD=ld.lld NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy'
         make_opts+=" OBJDUMP=llvm-objdump READELF=llvm-readelf LLVM_IAS=1"
-        host_make_opts="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld HOSTAR=llvm-ar"
+        host_make_opts='HOSTCC="sccache clang" HOSTCXX="sccache clang++" HOSTLD=ld.lld HOSTAR=llvm-ar'
 
         export CLANG_TRIPLE="aarch64-linux-gnu-"
         export CROSS_COMPILE="aarch64-linux-android-"
