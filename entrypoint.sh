@@ -86,8 +86,8 @@ if [[ $arch = "arm64" ]]; then
 
         if $binutils; then
             additional_packages="binutils binutils-aarch64-linux-gnu binutils-arm-linux-gnueabi"
-            make_opts='CC="sccache clang"'
-            host_make_opts='HOSTCC="sccache clang" HOSTCXX="sccache clang++"'
+            make_opts='CC=clang'
+            host_make_opts='HOSTCC=clang HOSTCXX=clang++'
         else
             # Most android kernels still need binutils as the assembler, but it will
             # not be used when the Makefile is patched to make use of LLVM_IAS option
