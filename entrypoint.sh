@@ -213,6 +213,8 @@ if [[ $arch = "arm64" ]]; then
         apt install -y --no-install-recommends \
             gcc-11 \
             g++-11 \
+            libgcc-11-dev \
+            libstdc++-11-dev \
             make \
             bc \
             libssl-dev \
