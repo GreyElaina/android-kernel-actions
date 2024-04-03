@@ -214,6 +214,10 @@ if [[ $arch = "arm64" ]]; then
         # 配置环境变量
         export PATH="/clang/bin:/gcc_arm64/bin:/gcc_arm/bin:$PATH"
 
+        make_opts="CC=clang LD=ld.lld NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy"
+        make_opts+=" OBJDUMP=llvm-objdump READELF=llvm-readelf LLVM_IAS=1"
+        host_make_opts="HOSTCC=clang HOSTCXX=clang++ HOSTLD=ld.lld HOSTAR=llvm-ar"
+
         export CLANG_TRIPLE="aarch64-linux-gnu-"
         export CROSS_COMPILE="aarch64-linux-android-"
         export CROSS_COMPILE_ARM32="arm-linux-androideabi-"
