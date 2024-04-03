@@ -210,6 +210,15 @@ if [[ $arch = "arm64" ]]; then
         prepare_toolchain "LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9" "gcc_arm" "lineage-19.1"
         prepare_toolchain "LineageOS/android_prebuilts_gcc_linux-x86_x86_x86_64-linux-android-4.9" "gcc_x86" "lineage-19.1"
 
+        apt install -y --no-install-recommends \
+            gcc-11 \
+            g++-11 \
+            make \
+            bc \
+            libssl-dev \
+            libncurses5-dev ||
+            exit 127
+
         # 配置环境变量
         export PATH="/clang/bin:/gcc_arm64/bin:/gcc_arm/bin:/gcc_x86/bin:$PATH"
 
