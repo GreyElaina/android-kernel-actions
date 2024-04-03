@@ -190,16 +190,16 @@ if [[ $arch = "arm64" ]]; then
     elif [[ $compiler = custom ]]; then
         prepare_toolchain() {
             local name=$1
-            local path=$2
+            local v=$2
             local revision=$3
             local url="https://github.com/${name}/archive/refs/heads/${revision}.zip"
 
             echo "Downloading $url"
-            if ! wget --no-check-certificate "$url" -O "/tmp/${path}.zip" &>/dev/null; then
-                echo "Failed downloading ${path}, refer to the README for details"
+            if ! wget --no-check-certificate "$url" -O "$CWD/$v.zip" &>/dev/null; then
+                echo "Failed downloading $v, refer to the README for details"
                 exit 1
             fi
-            unzip "/tmp/${path}.zip" -d "/${path}"
+            unzip "$CWD/$path.zip" -d "$CWD/$v"
         }
 
         # 下载并解压clang
@@ -212,7 +212,7 @@ if [[ $arch = "arm64" ]]; then
         apt install -y --no-install-recommends libgcc-10-dev || exit 127
 
         # 配置环境变量
-        export PATH="/clang/bin:/gcc_arm64/bin:/gcc_arm/bin:$PATH"
+        export PATH="$CWD/clang/bin:$CWD/gcc_arm64/bin:$CWD/gcc_arm/bin:$PATH"
 
         make_opts="CC=clang LD=ld.lld NM=llvm-nm STRIP=llvm-strip OBJCOPY=llvm-objcopy"
         make_opts+=" OBJDUMP=llvm-objdump READELF=llvm-readelf LLVM_IAS=1"
